@@ -58,7 +58,7 @@ void AliAnalysisTaskPsEfficiency::UserCreateOutputObjects() {
   string tpctof[2] = {"TPC","TOF"};
   string tpctofMC[2] = {"TPC","TPC_TOF"};
 
-  fProduction = new TH2F("fProduction",";P_{s} state;;#it{p} (GeV/#it{c});Entries",2,-0.5,1.5,100,-10,10);
+  fProduction = new TH2F("fProduction",";P_{s} state;#it{p} (GeV/#it{c});Entries",2,-0.5,1.5,100,-10,10);
   fList->Add(fProduction);
 
   for (int iC = 0; iC < 2; ++iC) {
@@ -69,7 +69,7 @@ void AliAnalysisTaskPsEfficiency::UserCreateOutputObjects() {
       fList->Add(fReconstructed[iT][iC]);
     }
   }
-  
+
   AliPDG::AddParticlesToPdgDataBase();
   fEventCut.AddQAplotsToList(fList);
 
@@ -96,7 +96,7 @@ void AliAnalysisTaskPsEfficiency::UserExec(Option_t *){
   if (!stack)
     ::Fatal("AliAnalysisTaskPsEfficiency::UserExec","MC analysis requested on a sample without the MC particle array.");
 
-  /// Making the list of the deuterons we want to measure
+  /// Making the list of the pentaquarks we want to measure
   for (int iMC = 0; iMC < stack->GetEntriesFast(); ++iMC) {
     AliAODMCParticle *part = (AliAODMCParticle*)stack->UncheckedAt(iMC);
     const int pdg = TMath::Abs(part->GetPdgCode());
@@ -109,8 +109,8 @@ void AliAnalysisTaskPsEfficiency::UserExec(Option_t *){
     if (part->IsPhysicalPrimary()) fTotal[iC]->Fill(iS,part->Pt());
   }
 
-  /// Checking how many deuterons in acceptance are reconstructed well
-  std::vector<std::pair<int,int>> mothers;
+  /// Checking how many pentaquarks in acceptance are reconstructed well
+  std::vector<AliAnalysisTaskPsEfficiency::mother_struct> mothers;
   mothers.reserve(40);
   for (Int_t iT = 0; iT < (Int_t)ev->GetNumberOfTracks(); ++iT) {
     AliAODTrack *track = static_cast<AliAODTrack*>(ev->GetTrack(iT));
@@ -127,12 +127,16 @@ void AliAnalysisTaskPsEfficiency::UserExec(Option_t *){
     AliAODMCParticle* mother = (mother_id >= 0) ? (AliAODMCParticle*)stack->At(mother_id) : nullptr;
     if (!mother) continue;
     const int mother_pdg = TMath::Abs(mother->GetPdgCode());
+    //Check wheter the track belongs to a proton
     if (pdg == 2212 && (mother_pdg == 9322134 || mother_pdg == 9322136)) {
       auto it = std::find(mothers.begin(),mothers.end(), mother_id);
-      if (it == mothers.end()) mothers_pdg.push_back(std::make_pair(mother_id,1));
-      else it.second++;
+      if (it == mothers.end())      mothers.push_back({mother_id,AliAnalysisTaskPsEfficiency::HasTOF(track),1});
+      else{
+        it->n_daughters++;
+        it->tof*=AliAnalysisTaskPsEfficiency::HasTOF(track);
+      }
     }
-
+    //Check wether the track belgons to a kaon from the decay of a phi
     if (pdg == 321 && mother_pdg == 333) {
       const int ancestor_id = mother->GetMother();
       AliAODMCParticle* ancestor = (ancestor_id >= 0) ? (AliAODMCParticle*)stack->At(ancestor_id) : nullptr;
@@ -140,11 +144,14 @@ void AliAnalysisTaskPsEfficiency::UserExec(Option_t *){
       const int ancestor_pdg = TMath::Abs(ancestor->GetPdgCode());
       if (ancestor_pdg == 9322134 || ancestor_pdg == 9322136) {
         auto it = std::find(mothers.begin(),mothers.end(), ancestor_id);
-        if (it == mothers.end()) mothers_pdg.push_back(std::make_pair(ancestor_id,1));
-        else it.second++;
+        if (it == mothers.end()) mothers.push_back({ancestor_id,AliAnalysisTaskPsEfficiency::HasTOF(track),1});
+        else{
+          it->n_daughters++;
+          it->tof*=AliAnalysisTaskPsEfficiency::HasTOF(track);
+        }
       }
-    }  
-  
+    }
+
     //const int iTof = int(HasTOF(track));
     //float pT = track->Pt() * fCharge;
     //const int iC = part->Charge() > 0 ? 1 : 0;
@@ -156,10 +163,13 @@ void AliAnalysisTaskPsEfficiency::UserExec(Option_t *){
 
   for (const auto& mum : mothers) {
     if (mum.second != 3) continue;
-    AliAODMCParticle *part = static_cast<AliAODMCParticle*>(stack->At(mum.first));
+    AliAODMCParticle *part = static_cast<AliAODMCParticle*>(stack->At(mum.id));
     const int iC = part->Charge() > 0 ? 1 : 0;
     const int pdg = TMath::Abs(part->GetPdgCode());
     const int iS = pdg == 9322134 ? 0 : pdg == 9322136 ? 1 : -1;
+    const float pt = (float)TMath::Abs(part->Pt());
+    fReconstructed[0][iC]->Fill(iS,pt);
+    if(mum.tof) fReconstructed[1][iC]->Fill(iS,pt);
   }
 
   //  Post output data.

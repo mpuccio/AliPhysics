@@ -40,6 +40,14 @@ public:
   AliEventCuts fEventCut;               /// Standard cuts for event selection
   unsigned int fFilterBit;              /// AOD filter bit for the tracks used in this analysis
   unsigned int fPDG;                    /// Either 9322134 or 9322136, depending on the state under investigation
+
+  struct mother_struct{
+    int id;
+    bool tof;
+    int n_daughters;
+    bool operator==(const mother_struct& m1) const {return id==m1.id;}
+  };
+
 private:
   AliAnalysisTaskPsEfficiency (const AliAnalysisTaskPsEfficiency &source) {}
   AliAnalysisTaskPsEfficiency &operator=(const AliAnalysisTaskPsEfficiency &source) {}
