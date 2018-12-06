@@ -6,7 +6,7 @@
 #include <Rtypes.h>
 #include <type_traits>
 
-template<typename F>
+template <typename F>
 struct SlimTrack {
   static_assert(std::is_floating_point<F>::value, "SlimTrack wants a floating point type.");
 
@@ -14,8 +14,9 @@ struct SlimTrack {
   F Eta = -999;
   F Phi = -999;
 
-  void Fill(AliVSlimTrack *track) {
-    Pt = track->Pt();
+  void Fill(AliVTrack* track)
+  {
+    Pt = track->GetSignedPt();
     Eta = track->Eta();
     Phi = track->Phi();
   };

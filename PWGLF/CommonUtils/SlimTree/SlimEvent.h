@@ -7,7 +7,7 @@
 #include <Rtypes.h>
 #include <type_traits>
 
-template<typename F>
+template <typename F>
 struct SlimEvent {
   static_assert(std::is_floating_point<F>::value, "SlimEvent wants a floating point type.");
 
@@ -16,15 +16,16 @@ struct SlimEvent {
   F VtxZ = -999;
   F Multiplicity = -999; //[-1, 16383, 14]
 
-  void Fill(AliEventCuts &ev) {
+  void Fill(AliEventCuts& ev)
+  {
     const AliVVertex* vtx = ev.GetPrimaryVertex();
     VtxX = vtx->GetX();
     VtxY = vtx->GetY();
     VtxZ = vtx->GetZ();
+    Multiplicity = ev.GetCentrality();
   };
 
   ClassDefInlineNV(SlimEvent<F>, 1)
-
 };
 
 #endif
