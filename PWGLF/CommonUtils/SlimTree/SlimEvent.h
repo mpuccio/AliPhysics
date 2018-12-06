@@ -25,7 +25,6 @@ struct SlimEvent {
     Multiplicity = ev.GetCentrality();
   };
 
-  ClassDefInlineNV(SlimEvent<F>, 1)
 };
 
 #endif

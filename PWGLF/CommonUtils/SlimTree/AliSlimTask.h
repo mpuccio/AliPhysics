@@ -1,12 +1,14 @@
 #ifndef Task_HH
 #define Task_HH
 
+#include <TTree.h>
+#include <TChain.h>
+
+#include "AliEventCuts.h"
 #include "AliAnalysisTaskSE.h"
 
-class TChain;
-class AliEventCuts;
-class AliEventSummary;
-class AliTrackSummary;
+#include "SlimEvent.h"
+#include "SlimTrack.h"
 
 class AliSlimTask : public AliAnalysisTaskSE {
   public:

@@ -26,8 +26,8 @@ include_directories(${AliPhysics_SOURCE_DIR}/PWGLF/CommonUtils
 include_directories(${ROOT_INCLUDE_DIRS}
 #                    ${ALIROOT_INCLUDE_DIRS}
 #                    ${AliPhysics_SOURCE_DIR}/CORRFW
-#                    ${AliPhysics_SOURCE_DIR}/OADB
-#                    ${AliPhysics_SOURCE_DIR}/OADB/COMMON/MULTIPLICITY
+                    ${AliPhysics_SOURCE_DIR}/OADB
+                    ${AliPhysics_SOURCE_DIR}/OADB/COMMON/MULTIPLICITY
 #                    ${AliPhysics_SOURCE_DIR}/PWG/Tools
 #                    ${AliPhysics_SOURCE_DIR}/PWGUD/base
 #                    ${AliPhysics_SOURCE_DIR}/EVENTMIX
@@ -35,7 +35,8 @@ include_directories(${ROOT_INCLUDE_DIRS}
 
 # Sources - alphabetical order
 set(SRCS
-  MConthefly/AliAnalysisTaskSimSpectraLF.cxx  
+  MConthefly/AliAnalysisTaskSimSpectraLF.cxx
+  SlimTree/AliSlimTask.cxx
   )
 
 # Headers from sources
@@ -44,6 +45,8 @@ string(REPLACE ".cxx" ".h" HDRS "${SRCS}")
 set(HDRS
   ${HDRS}
   AdditionalFunctions.h
+  SlimTree/SlimEvent.h
+  SlimTree/SlimTrack.h
   )
 
 # Generate the dictionary

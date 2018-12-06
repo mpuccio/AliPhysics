@@ -1,17 +1,9 @@
-
-// ROOT includes
-#include "TChain.h"
-#include "TTree.h"
 #include <iostream>
 
 // AliROOT includes
 #include "AliESDEvent.h"
 #include "AliESDtrackCuts.h"
-#include "AliEventCuts.h"
-
-// Custom includes
-#include "SlimEvent.h"
-#include "SlimTrack.h"
+#include "AliLog.h"
 
 #include "AliSlimTask.h"
 

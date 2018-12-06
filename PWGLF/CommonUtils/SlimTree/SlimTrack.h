@@ -21,7 +21,6 @@ struct SlimTrack {
     Phi = track->Phi();
   };
 
-  ClassDefInlineNV(SlimTrack<F>, 1)
 };
 
 #endif
