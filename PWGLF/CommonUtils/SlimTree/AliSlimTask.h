@@ -27,9 +27,9 @@ class AliSlimTask : public AliAnalysisTaskSE {
 
   private:
   TTree* fTreeEvent; //!<! TTree to store information of the single event
-  SlimEvent<Double32_t> fEv;
+  SlimEvent<Double32_t>* fEv;
   TTree* fTreeTrack; //!<! TTree to store information of the single track
-  SlimTrack<Double32_t> fTr;
+  SlimTrack<Double32_t>* fTr;
 
   //
   AliSlimTask(const AliSlimTask&);            //! Copy constructor

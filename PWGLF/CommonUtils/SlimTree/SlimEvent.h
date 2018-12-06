@@ -19,9 +19,11 @@ struct SlimEvent {
   void Fill(AliEventCuts& ev)
   {
     const AliVVertex* vtx = ev.GetPrimaryVertex();
-    VtxX = vtx->GetX();
-    VtxY = vtx->GetY();
-    VtxZ = vtx->GetZ();
+    if (vtx) {
+      VtxX = vtx->GetX();
+      VtxY = vtx->GetY();
+      VtxZ = vtx->GetZ();
+    }
     Multiplicity = ev.GetCentrality();
   };
 

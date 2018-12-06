@@ -104,4 +104,4 @@ install(TARGETS ${MODULE}
 install(FILES ${HDRS} DESTINATION include)
 
 # Install macros
-install(DIRECTORY MConthefly/macros DESTINATION PWGLF/CommonUtils/MConthefly)
+install(DIRECTORY . DESTINATION PWGLF/CommonUtils FILES_MATCHING PATTERN "*.C")

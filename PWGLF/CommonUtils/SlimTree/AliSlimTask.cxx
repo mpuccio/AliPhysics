@@ -39,10 +39,12 @@ void AliSlimTask::UserCreateOutputObjects()
   fESDtrackCuts = (AliESDtrackCuts*)AliESDtrackCuts::GetStandardITSTPCTrackCuts2011(kTRUE, 1);
   OpenFile(1);
   fTreeEvent = new TTree("fTreeEvent", "Event Properties");
-  fTreeEvent->Branch("Event", &fEv);
+  fEv = new SlimEvent<Double32_t>;
+  fTreeEvent->Branch("Event", &fEv,32000,1);
   OpenFile(2);
   fTreeTrack = new TTree("fTreeTrack", "Track Properties");
-  fTreeTrack->Branch("Track", &fTr);
+  fTr = new SlimTrack<Double32_t>;
+  fTreeTrack->Branch("Track", &fTr,32000,1);
   Post();
 }
 
@@ -50,22 +52,19 @@ void AliSlimTask::UserCreateOutputObjects()
 void AliSlimTask::UserExec(Option_t*)
 {
   AliESDEvent* esd = dynamic_cast<AliESDEvent*>(InputEvent());
-  if (!esd) {
-    AliError("fESD not available");
-    // Post output data.
-    Post();
+  if (!esd)
+    AliFatal("fESD not available");
+
+  if (!fESDtrackCuts)
+    AliFatal("fESDtrackCuts not available");
+
+  if (!fEventCut.AcceptEvent(esd))
     return;
-  }
-  if (!fESDtrackCuts) {
-    AliError("fESDtrackCuts not available");
-    // Post output data.
-    Post();
-    return;
-  }
-  fEv.Fill(fEventCut);
+
+  fEv->Fill(fEventCut);
   fTreeEvent->Fill();
   for (Int_t i = 0; i < esd->GetNumberOfTracks(); i++) {
-    fTr.Fill(esd->GetTrack(i));
+    fTr->Fill(esd->GetTrack(i));
     fTreeTrack->Fill();
   }
   fTreeTrack->FlushBaskets();
