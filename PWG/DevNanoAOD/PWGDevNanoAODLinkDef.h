@@ -17,4 +17,6 @@
 #pragma link C++ class AliNanoAODSimpleSetterJet+;
 #pragma link C++ class AliAnalysisTaskNanoSimple;
 
+#pragma link C++ class AliAnalysisTaskNanoAODFilterSelection+;
+
 #endif
