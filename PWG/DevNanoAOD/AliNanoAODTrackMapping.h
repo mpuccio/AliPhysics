@@ -130,6 +130,9 @@ private:
   Int_t fTOFBunchCrossing;      ///< Mapping variable
   Int_t fID;      ///< Mapping variable
   Int_t fcovmat[21];          ///< Mapping variables
+  Int_t fTOFchi2;        ///< Mapping variables
+  Int_t fTOFsignalDx;    ///< Mapping variables
+  Int_t fTOFsignalDz;    ///< Mapping variables
 
   
   // Setters are private because we don't want the mapping to change once the class has been instantiated 
@@ -171,6 +174,9 @@ private:
   void  SetTPCnclsS         (Int_t var) { fTPCnclsS = var;         }
   void  SetFilterMap        (Int_t var) { fFilterMap = var;        }
   void  SetCovMat           (Int_t var, Int_t index) { fcovmat[index] = var; }
+  void  SetTOFchi2          (Int_t var) { fTOFchi2 = var;          }
+  void  SetTOFsignalDx      (Int_t var) { fTOFsignalDx = var;      }  
+  void  SetTOFsignalDz      (Int_t var) { fTOFsignalDz = var;      }  
 
 
   static AliNanoAODTrackMapping * fInstance; ///< instance, needed for the singleton implementation
