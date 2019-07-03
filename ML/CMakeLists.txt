@@ -13,7 +13,6 @@
 # * provided "as is" without express or implied warranty.                  *
 # **************************************************************************
 
-if (TREELITE_ROOT)
 #Module
 set(MODULE ML)
 add_definitions(-D_MODULE_="${MODULE}")
@@ -24,9 +23,11 @@ include_directories(${AliPhysics_SOURCE_DIR}/ML
 
 # Additional includes - alphabetical order except ROOT
 include_directories(${ROOT_INCLUDE_DIRS}
+                    ${ONNXRUNTIME_ROOT}/include
                     ${TREELITE_ROOT}/include
   )
 set(SRCS
+    AliONNXInterface.cxx
     AliExternalBDT.cxx
 )
 
@@ -43,7 +44,7 @@ set(ALIROOT_DEPENDENCIES ANALYSISalice EVGEN)
 
 # Generate the ROOT map
 # Dependecies
-set(LIBDEPS ${ALIROOT_DEPENDENCIES} ${ROOT_DEPENDENCIES} treelite treelite_runtime)
+set(LIBDEPS ${ALIROOT_DEPENDENCIES} ${ROOT_DEPENDENCIES} treelite treelite_runtime onnxruntime)
 generate_rootmap("${MODULE}" "${LIBDEPS}" "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE}LinkDef.h")
 
 # Generate a PARfile target for this library. Note the extra includes ("Tracks UserTasks")
@@ -55,7 +56,7 @@ add_library(${MODULE}-object OBJECT ${SRCS} G__${MODULE}.cxx)
 
 # Add a library to the project using the object
 add_library_tested(${MODULE} SHARED $<TARGET_OBJECTS:${MODULE}-object>)
-target_link_libraries(${MODULE} ${ALIROOT_DEPENDENCIES} ${ROOT_DEPENDENCIES} -L${TREELITE_ROOT}/lib treelite treelite_runtime)
+target_link_libraries(${MODULE} ${ALIROOT_DEPENDENCIES} ${ROOT_DEPENDENCIES} -L${TREELITE_ROOT}/lib treelite treelite_runtime -L${ONNXRUNTIME_ROOT}/lib64)
 
 # Setting the correct headers for the object as gathered from the dependencies
 target_include_directories(${MODULE}-object PUBLIC $<TARGET_PROPERTY:${MODULE},INCLUDE_DIRECTORIES>)
@@ -91,4 +92,3 @@ install(FILES ${HDRS} DESTINATION include)
 install(DIRECTORY . DESTINATION ML/ FILES_MATCHING PATTERN "*.C")
 
 message(STATUS "ML enabled")
-endif(TREELITE_ROOT)
