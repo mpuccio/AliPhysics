@@ -15,9 +15,10 @@
 #ifndef ALIONNXINTERFACE_H
 #define ALIONNXINTERFACE_H
 
-// #include <onnxruntime_cxx_api.h>
-#include "onnxruntime/core/session/onnxruntime_cxx_api.h"
 #include <string>
+
+class OrtEnv;
+class OrtSessionOptions;
 
 class AliONNXInterface {
 public:
@@ -30,8 +31,8 @@ public:
 
 private:
   std::string fInterfaceName;
-  Ort::Env fEnv;
-  Ort::SessionOptions fSessionOptions;
+  OrtEnv* fEnv;
+  OrtSessionOptions* fSessionOptions;
 };
 
 #endif

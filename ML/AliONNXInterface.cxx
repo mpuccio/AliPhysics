@@ -11,12 +11,15 @@
 /// \author fabio.catalano@cern.ch
 
 #include "AliONNXInterface.h"
-#include <type_traits>
+
+#include <iostream>
+#include <onnxruntime/core/session/onnxruntime_c_api.h>
 
 
 AliONNXInterface::AliONNXInterface(std::string name, bool debug) :
   fInterfaceName{name},
-  fEnv{std::nullptr_t}
+  fEnv{nullptr},
+  fSessionOptions{nullptr}
 {
   OrtLoggingLevel log_level;
   const char* env_name;
@@ -28,15 +31,18 @@ AliONNXInterface::AliONNXInterface(std::string name, bool debug) :
     log_level = ORT_LOGGING_LEVEL_WARNING;
     env_name = fInterfaceName.c_str();
   }
-  fEnv = Ort::Env(log_level, env_name);
+  auto status = OrtCreateEnv(log_level, env_name, &fEnv);
+  if (status) {
+    std::cout << "Environment creation failed with status " << status << std::endl;
+  }
 }
 
-bool AliONNXInterface::LoadXGBoostModel(std::string path) {
-
+bool AliONNXInterface::LoadXGBoostModel(std::string path)
+{
   return false;
 }
 
-float AliONNXInterface::Predict(float *fearures, int size) {
-
+float AliONNXInterface::Predict(float *fearures, int size)
+{
   return 0.f;
 }
